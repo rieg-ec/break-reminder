@@ -1,15 +1,10 @@
-from PyQt5.QtWidgets import (
-    QWidget, QPushButton, QLabel,
-    QLineEdit, QApplication
-    )
-from PyQt5.QtCore import pyqtSignal, QTimer, Qt
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QApplication)
+from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QVBoxLayout
 
 import time
 
 class TransparentWindow(QWidget):
-
-    timer_has_finished = pyqtSignal()
 
     def __init__(self):
         super().__init__()

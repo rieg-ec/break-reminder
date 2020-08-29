@@ -1,8 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QObject, QTimer
 from pynput import keyboard
-import time
-import threading
-
 
 class Logic(QObject):
 
