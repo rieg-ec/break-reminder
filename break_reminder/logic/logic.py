@@ -3,13 +3,11 @@ from pynput import keyboard
 
 class Logic(QObject):
 
-    display_break_ui_signal = pyqtSignal(int)
-    reset_timer_signal = pyqtSignal(int)
-    hide_break_ui_signal = pyqtSignal()
-
     class CountDown(QObject):
         end_break_signal = pyqtSignal()
         end_active_signal = pyqtSignal()
+
+        clock_counter_signal = pyqtSignal(int)
 
         def __init__(self):
             super().__init__()
@@ -35,21 +33,28 @@ class Logic(QObject):
             else:
                 print('time left:', self.time_left, self.is_break)
                 self.time_left -= 1
+                self.clock_counter_signal.emit(self.time_left)
 
         def reset(self, time_left):
             # add 1 to prevent finishing before visual timer gets to 00:00
             self.time_left = time_left + 1
 
-    # TODO: move to a json config file
-    break_time = 60 * 8
-    active_time = 60 * 40
+    display_break_ui_signal = pyqtSignal(int)
+    hide_break_ui_signal = pyqtSignal()
+    # signal to update all ui clocks in real time:
+    update_timer_signal = pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self, break_time, active_time, prolong_break):
         super().__init__()
+        self.break_time = break_time
+        self.active_time = active_time
+        self.prolong_break = prolong_break
 
         self.counter = self.CountDown()
         self.counter.end_active_signal.connect(self.startBreakTimer)
         self.counter.end_break_signal.connect(self.startActiveTimer)
+        self.counter.clock_counter_signal.connect(
+            self.update_timer_signal.emit)
 
         self.timer = QTimer(self)
         self.timer.setInterval(1 * 1000)
@@ -59,11 +64,17 @@ class Logic(QObject):
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
 
-    def startActiveTimer(self, time=active_time):
+    def startActiveTimer(self, time=None):
+        if time is None:
+            time = self.active_time
+
         self.counter.startAsActiveCounter(time)
         self.hide_break_ui_signal.emit()
 
-    def startBreakTimer(self, time=break_time):
+    def startBreakTimer(self, time=None):
+        if time is None:
+            time = self.break_time
+
         self.counter.startAsBreakCounter(time)
         self.display_break_ui_signal.emit(time)
 
@@ -75,10 +86,7 @@ class Logic(QObject):
                 self.startActiveTimer()
 
             elif key == keyboard.Key.f1:
-                # TODO: move constants to json file
-                self.startActiveTimer(60 * 5)
+                self.startActiveTimer(self.prolong_break)
 
             else:
-                # reset break timer:
-                self.reset_timer_signal.emit(self.break_time)
                 self.counter.reset(self.break_time)
