@@ -13,12 +13,6 @@ class TransparentWindow(QWidget):
         self.initUI()
 
     def initUI(self):
-        '''
-        WindowStaysOnTopHint for always on top,
-        WindowTransparentForInput makes QWidget frameless,
-        FramelessWindowHint makes transparent for input
-        '''
-
         layout = QVBoxLayout()
 
         ### TIMER LABEL ###
@@ -51,7 +45,12 @@ class TransparentWindow(QWidget):
 
         layout.setAlignment(Qt.AlignCenter)
         self.setLayout(layout)
-
+        
+        '''
+        WindowStaysOnTopHint for always on top,
+        WindowTransparentForInput makes QWidget frameless,
+        FramelessWindowHint makes transparent for input
+        '''
         self.setWindowFlags(
             self.windowFlags() |
             Qt.WindowStaysOnTopHint |
