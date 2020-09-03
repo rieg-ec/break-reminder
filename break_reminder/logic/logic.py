@@ -1,5 +1,9 @@
 from PyQt5.QtCore import pyqtSignal, QObject, QTimer
 from pynput import keyboard
+from os import path
+import json
+
+from logic.utils import json_hook
 
 class Logic(QObject):
 
@@ -9,17 +13,37 @@ class Logic(QObject):
 
         clock_counter_signal = pyqtSignal(int)
 
+        prolong_break = 5 * 60
+
         def __init__(self):
             super().__init__()
-            self.time_left = None
+            self.update_attrs_from_config()
+            self.tick = 1
 
-        def startAsBreakCounter(self, time):
+        def update_attrs_from_config(self):
+            with open(path.join(path.dirname(__file__),
+                    'config.json'), 'r') as file:
+
+                parameters = json.loads(file.read(), object_hook=json_hook)
+                self.break_time = parameters['break_time']
+                self.active_time = parameters['active_time']
+
+        def start_as_break_counter(self):
             self.is_break = True
-            self.time_left = time
+            self.time_left = self.break_time
 
-        def startAsActiveCounter(self, time):
+        def start_as_active_counter(self, prolong_break=False):
             self.is_break = False
-            self.time_left = time
+            if prolong_break:
+                self.time_left = self.prolong_break
+            else:
+                self.time_left = self.active_time
+
+        def pause(self):
+            if self.tick:
+                self.tick = 0
+            else:
+                self.tick = 1
 
         def updateTime(self):
             if not self.time_left:
@@ -31,28 +55,19 @@ class Logic(QObject):
                     self.is_break = True
 
             else:
-                print('time left:', self.time_left, self.is_break)
-                self.time_left -= 1
+                self.time_left -= self.tick # 1 or 0 if pause
                 self.clock_counter_signal.emit(self.time_left)
-
-        def reset(self, time_left):
-            # add 1 to prevent finishing before visual timer gets to 00:00
-            self.time_left = time_left + 1
 
     display_break_ui_signal = pyqtSignal(int)
     hide_break_ui_signal = pyqtSignal()
     # signal to update all ui clocks in real time:
     update_timer_signal = pyqtSignal(int)
 
-    def __init__(self, break_time, active_time, prolong_break):
+    def __init__(self):
         super().__init__()
-        self.break_time = break_time
-        self.active_time = active_time
-        self.prolong_break = prolong_break
-
         self.counter = self.CountDown()
-        self.counter.end_active_signal.connect(self.startBreakTimer)
-        self.counter.end_break_signal.connect(self.startActiveTimer)
+        self.counter.end_active_signal.connect(self.start_break_timer)
+        self.counter.end_break_signal.connect(self.start_active_timer)
         self.counter.clock_counter_signal.connect(
             self.update_timer_signal.emit)
 
@@ -64,29 +79,42 @@ class Logic(QObject):
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
 
-    def startActiveTimer(self, time=None):
-        if time is None:
-            time = self.active_time
-
-        self.counter.startAsActiveCounter(time)
+    def start_active_timer(self, prolong_break=False):
+        self.counter.start_as_active_counter(prolong_break=prolong_break)
         self.hide_break_ui_signal.emit()
 
-    def startBreakTimer(self, time=None):
-        if time is None:
-            time = self.break_time
+    def start_break_timer(self):
+        self.counter.start_as_break_counter()
+        self.display_break_ui_signal.emit(self.counter.time_left)
 
-        self.counter.startAsBreakCounter(time)
-        self.display_break_ui_signal.emit(time)
+    def pause_timer(self):
+        self.counter.pause()
 
+    def reset_timer(self):
+        self.hide_break_ui_signal.emit()
+        self.counter.start_as_active_counter()
 
     def on_press(self, key):
         ''' key listener method '''
         if self.counter.is_break:
             if key == keyboard.Key.esc:
-                self.startActiveTimer()
+                self.start_active_timer()
 
             elif key == keyboard.Key.f1:
-                self.startActiveTimer(self.prolong_break)
+                self.start_active_timer(prolong_break=True)
 
             else:
-                self.counter.reset(self.break_time)
+                self.counter.start_as_break_counter()
+
+    def update_config(self, config):
+        with open(path.join(path.dirname(__file__),
+                'config.json'), 'r+') as file:
+
+            parameters = json.loads(file.read(), object_hook=json_hook)
+            file.seek(0)
+            for key, value in config.items():
+                parameters[key] = value
+            file.write(json.dumps(parameters))
+            file.truncate()
+        # update counter attributes from new config file:
+        self.counter.update_attrs_from_config()

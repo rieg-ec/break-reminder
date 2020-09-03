@@ -1,39 +1,51 @@
-from PyQt5.QtWidgets import QMenu, QSystemTrayIcon, QLabel
+from PyQt5.QtWidgets import QMenu, QSystemTrayIcon, QLabel, QApplication
+from PyQt5.QtCore import Qt, pyqtSignal
+
+from PyQt5.QtGui import QIcon, QPixmap
+
 import sys
 import time
-
-# TODO: add qline edits to make ui prettier
+from os import path
 
 class SystemTrayIcon(QSystemTrayIcon):
 
-    break_interval_notification = 10 # minutes
+    open_settings_window_signal = pyqtSignal()
+
+    break_interval_notification = 10 * 1000
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # TODO: set icon
-        # self.icon = None
-        # self.setIcon(self.icon)
+
+        pixmap = QPixmap(path.join('gui', 'assets', 'clock.png'))
+        self.icon = QIcon(pixmap)
+        self.setIcon(self.icon)
+
+        self.setVisible(True)
+
         menu = QMenu(parent)
-        menu.setTitle("Break Reminder")
 
-        self.timer_label = QLabel('<b>Hola</b>')
-        menu.setDefaultWidget(self.timer_label)
+        self.timer = menu.addAction('00:00:00')
+        self.timer.setEnabled(False)
 
-        exitAction = menu.addAction("Quit")
-        # TODO: is this the best way to exit app?
-        exitAction.triggered.connect(sys.exit)
+        menu.addSeparator()
+
+        settings = menu.addAction('Settings')
+        settings.triggered.connect(self.open_settings_window_signal.emit)
+
+        menu.addSeparator()
+
+        exitAction = menu.addAction("&Quit")
+        exitAction.triggered.connect(QApplication.quit)
 
         self.setContextMenu(menu)
 
-        self.show()
+    def update_timer_countdown(self, seconds_left):
+        time_clock_mode = time.strftime('%H:%M:%S', time.gmtime(seconds_left))
 
-        # TODO: is this useful at all?
-        self.setToolTip("tool tip")
+        self.timer.setText(time_clock_mode)
 
-    def updateTimerCountdown(self, seconds_left):
-        self.timer_label = time.strftime(
-            '%M:%S', time.gmtime(seconds_left))
-
-        if seconds_left % (60 * self.break_interval_notification) == 0:
+        if seconds_left and seconds_left % self.\
+                break_interval_notification == 0:
             self.showMessage('Break Reminder',
-                            f'Time left until next break: {time}')
+                f'Time left until next break: {time_clock_mode}',
+                self.icon, 2 * 1000)

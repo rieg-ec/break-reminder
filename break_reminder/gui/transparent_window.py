@@ -52,12 +52,13 @@ class TransparentWindow(QWidget):
         layout.setAlignment(Qt.AlignCenter)
         self.setLayout(layout)
 
-        # TODO: Qt.X11BypassWindowManagerHint
-        self.setWindowFlags(self.windowFlags() |
+        self.setWindowFlags(
+            self.windowFlags() |
             Qt.WindowStaysOnTopHint |
             Qt.WindowTransparentForInput |
             Qt.FramelessWindowHint |
-            Qt.Tool)
+            Qt.Tool
+        )
 
         # adjust transparency (opacity):
         self.setWindowOpacity(0.5)
@@ -68,8 +69,14 @@ class TransparentWindow(QWidget):
             'background-color: black;'
            +'color: white;')
 
-    def updateUITimer(self, seconds_left):
+    def show(self, time):
+        self.update_UI_timer(time)
+        print(time)
+        super().show()
+
+
+    def update_UI_timer(self, seconds_left):
         ''' called to update cronometer ui '''
         seconds_left_clock_mode = time.strftime(
-            '%M:%S', time.gmtime(seconds_left))
+            '%H:%M:%S', time.gmtime(seconds_left))
         self.timer_label.setText(seconds_left_clock_mode)
