@@ -16,7 +16,7 @@ class SystemTrayIcon(QSystemTrayIcon):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        pixmap = QPixmap(path.join('gui', 'assets', 'clock.png'))
+        pixmap = QPixmap(path.join(path.dirname(__file__), 'assets', 'clock.png'))
         self.icon = QIcon(pixmap)
         self.setIcon(self.icon)
 
