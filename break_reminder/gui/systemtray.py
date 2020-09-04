@@ -13,7 +13,7 @@ class SystemTrayIcon(QSystemTrayIcon):
     pause_timer_signal = pyqtSignal()
     reset_timer_signal = pyqtSignal()
 
-    break_interval_notification = 10 * 1000
+    break_interval_notification = 10 * 60
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -54,11 +54,16 @@ class SystemTrayIcon(QSystemTrayIcon):
 
         self.timer.setText(time_clock_mode)
 
-        if seconds_left and seconds_left % self.\
-                break_interval_notification == 0:
-            self.showMessage('Break Reminder',
-                f'Time left until next break: {time_clock_mode}',
-                self.icon, 2 * 1000)
+        print(seconds_left % self.break_interval_notification)
+        if seconds_left:
+            if seconds_left == 5 * 60:
+                self.showMessage('Break Reminder',
+                    '5 minutes before next break')
+
+            elif seconds_left % self.break_interval_notification == 0:
+                self.showMessage('Break Reminder',
+                    f'Time left until next break: {time_clock_mode}',
+                    self.icon, 1.5 * 1000)
 
     def pause_timer(self):
         self.pause_timer_signal.emit()
