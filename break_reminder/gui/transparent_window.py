@@ -22,26 +22,17 @@ class TransparentWindow(QWidget):
         ###################
 
         ### INSTRUCTIONS LABELS ###
-        instructions_vbox = QVBoxLayout()
-
-        instructions_label_1 = QLabel("Press 'Esc' to skip break", self)
-        instructions_label_1.setStyleSheet('font-size: 30px;')
-
-        instructions_label_2 = QLabel(
-            "Press 'F1' to be active 5 more minutes", self)
-        instructions_label_2.setStyleSheet('font-size: 30px;')
-
-        instructions_vbox.addWidget(instructions_label_1)
-        instructions_vbox.addStretch(1)
-        instructions_vbox.addWidget(instructions_label_2)
+        instructions_label = QLabel("Press 'Esc' to skip break or "
+                                    +"'F1' to add 5 minutes", self)
+        instructions_label.setStyleSheet('font-size: 30px;')
 
         ###########################
 
         layout.insertStretch(0, stretch=3)
         layout.addWidget(self.timer_label)
         layout.insertStretch(2, stretch=1)
-        layout.addLayout(instructions_vbox)
-        layout.insertStretch(4, stretch=3)
+        layout.addWidget(instructions_label)
+        layout.insertStretch(4, stretch=4)
 
         layout.setAlignment(Qt.AlignCenter)
         self.setLayout(layout)
@@ -65,7 +56,7 @@ class TransparentWindow(QWidget):
         self.resize(QApplication.desktop().size())
         # self.setWindowState(Qt.WindowFullScreen)
         self.setStyleSheet(
-            'background-color: #333333;'
+            'background-color: black;'
            +'color: white;')
 
     def show(self, time):
