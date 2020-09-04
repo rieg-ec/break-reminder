@@ -45,7 +45,7 @@ class TransparentWindow(QWidget):
 
         layout.setAlignment(Qt.AlignCenter)
         self.setLayout(layout)
-        
+
         '''
         WindowStaysOnTopHint for always on top,
         WindowTransparentForInput makes QWidget frameless,
@@ -65,7 +65,7 @@ class TransparentWindow(QWidget):
         self.resize(QApplication.desktop().size())
         # self.setWindowState(Qt.WindowFullScreen)
         self.setStyleSheet(
-            'background-color: black;'
+            'background-color: #333333;'
            +'color: white;')
 
     def show(self, time):

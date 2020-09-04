@@ -3,7 +3,6 @@ from gui import TransparentWindow, SystemTrayIcon, SettingsQWidget
 from logic import Logic
 import sys
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setApplicationName("Break Reminder")
@@ -21,10 +20,10 @@ if __name__ == '__main__':
     logic.update_timer_signal.connect(system_tray_icon.update_timer_countdown)
 
     system_tray_icon.open_settings_window_signal.connect(config_window.show)
+    system_tray_icon.pause_timer_signal.connect(logic.pause_timer)
+    system_tray_icon.reset_timer_signal.connect(logic.reset_timer)
 
     config_window.config_data_signal.connect(logic.update_config)
-    config_window.pause_timer_signal.connect(logic.pause_timer)
-    config_window.reset_timer_signal.connect(logic.reset_timer)
 
     logic.start_active_timer()
 

@@ -7,8 +7,6 @@ from PyQt5.QtCore import Qt, pyqtSignal
 class SettingsQWidget(QWidget):
 
     config_data_signal = pyqtSignal(dict)
-    pause_timer_signal = pyqtSignal()
-    reset_timer_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -65,26 +63,17 @@ class SettingsQWidget(QWidget):
         layout.addWidget(self.active_minutes_spinbox, 9, 1)
         ###############################
 
-        self.pause_btn = QPushButton('Pause timer', self)
-        self.pause_btn.clicked.connect(self.pause_timer)
-        layout.addWidget(self.pause_btn, 11, 0, 1, 2, Qt.AlignCenter)
-
-        reset_btn = QPushButton('Reset timer', self)
-        reset_btn.clicked.connect(self.reset_timer_signal.emit)
-        layout.addWidget(reset_btn, 12, 0, 1, 2, Qt.AlignCenter)
-
         ok_btn = QPushButton('Ok', self)
         ok_btn.clicked.connect(self.save_changes)
 
-        layout.addWidget(ok_btn, 13, 0, 1, 2, Qt.AlignCenter)
+        layout.addWidget(ok_btn, 10, 0, 1, 2, Qt.AlignCenter)
         self.setLayout(layout)
 
-        self.setWindowOpacity(0.8)
         self.setStyleSheet('background-color: grey;')
 
         # window should be small widget close to systray icon
         x = QApplication.desktop().size().width() / 1.5
-        self.setGeometry(x, 150, 100, 320)
+        self.setGeometry(x, 150, 100, 250)
 
     def save_changes(self):
         seconds_total_break = self.break_hours_spinbox.value() * 3600 +\
@@ -99,10 +88,3 @@ class SettingsQWidget(QWidget):
         })
 
         self.hide()
-
-    def pause_timer(self):
-        self.pause_timer_signal.emit()
-        if self.pause_btn.text() == 'Pause timer':
-            self.pause_btn.setText('Resume timer')
-        else:
-            self.pause_btn.setText('Pause timer')
