@@ -44,9 +44,7 @@ class TransparentWindow(QWidget):
         WindowTransparentForInput makes QWidget frameless,
         FramelessWindowHint makes transparent for input
         '''
-        # TODO: add specific os flags, Qt.Tool doesnt work on mac but is
-        #       needed in linux
-
+        
         flags = self.WindowFlags()
         flags |= Qt.WindowStaysOnTopHint
         flags |= Qt.WindowTransparentForInput
