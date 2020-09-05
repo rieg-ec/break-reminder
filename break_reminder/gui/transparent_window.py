@@ -46,8 +46,7 @@ class TransparentWindow(QWidget):
             self.windowFlags() |
             Qt.WindowStaysOnTopHint |
             Qt.WindowTransparentForInput |
-            Qt.FramelessWindowHint |
-            Qt.Tool
+            Qt.FramelessWindowHint
         )
 
         # adjust transparency (opacity):
@@ -61,9 +60,7 @@ class TransparentWindow(QWidget):
 
     def show(self, time):
         self.update_UI_timer(time)
-        print(time)
         super().show()
-
 
     def update_UI_timer(self, seconds_left):
         ''' called to update cronometer ui '''

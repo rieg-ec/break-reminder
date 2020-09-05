@@ -54,7 +54,6 @@ class SystemTrayIcon(QSystemTrayIcon):
 
         self.timer.setText(time_clock_mode)
 
-        print(seconds_left % self.break_interval_notification)
         if seconds_left:
             if seconds_left == 5 * 60:
                 self.showMessage('Break Reminder',
