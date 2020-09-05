@@ -29,6 +29,7 @@ class ScreenSaveInhibit:
         self.system = platform.system()
 
     def inhibit_screen_saver(self, seconds):
+        seconds += 120 # prevent instant sleeping after breaks
         if self.system == 'Linux':
             th = threading.Thread(
                 target=self.prevent_screensaver_linux,
@@ -38,15 +39,13 @@ class ScreenSaveInhibit:
             th.start()
 
         elif self.system == 'Darwin':
-            pass
-            # self.prevent_screensaver_macos(seconds)
+            self.prevent_screensaver_macos(seconds)
 
         elif self.system == 'Windows':
             pass
 
     def prevent_screensaver_macos(self, seconds):
-        # TODO: does screen saver activates instantly after caffeinate ends?
-        command_line = f'caffeinate -i -t {seconds}'
+        command_line = f'caffeinate -u -t {seconds}'
         subprocess.Popen(shlex.split(command_line))
 
     def prevent_screensaver_windows(self, seconds):
@@ -69,7 +68,7 @@ class ScreenSaveInhibit:
         try:
             cookie = saver_interface.Inhibit("break reminder", "ux reasons")
             # adds 2 minutes to prevent instant sleeping after break ends
-            time.sleep(seconds + 120)
+            time.sleep(seconds)
             success = True
 
         except Exception as error:
