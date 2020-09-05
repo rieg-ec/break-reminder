@@ -1,4 +1,9 @@
 import json
+import dbus
+import shlex, subprocess
+import platform
+import time
+import threading
 
 def json_hook(dict_):
     """
@@ -15,3 +20,60 @@ def json_hook(dict_):
         return [json_hook(v) for v in dict_]
     else:
         return dict_
+
+
+class ScreenSaveInhibit:
+    ''' made to be executed in separated thread to prevent
+    screen from sleeping
+    '''
+    def __init__(self):
+        self.system = platform.system()
+
+    def inhibit_screen_saver(self, seconds):
+        if self.system == 'Linux':
+            th = threading.Thread(
+                target=self.prevent_screensaver_linux,
+                args=[seconds],
+                daemon=True)
+
+            th.start()
+
+        elif self.system == 'Darwin':
+            pass
+            # self.prevent_screensaver_macos(seconds)
+
+        elif self.system == 'Windows':
+            pass
+
+    def prevent_screensaver_macos(self, seconds):
+        # TODO: does screen saver activates instantly after caffeinate ends?
+        command_line = f'caffeinate -t {seconds}'
+        subprocess.Popen(shlex.split(command_line))
+
+    def prevent_screensaver_windows(self, seconds):
+        # windows way of preventing idle sleep:
+        # ctypes.windll.kernel32.SetThreadExecutionState('0x80000002')
+        pass
+
+    def prevent_screensaver_linux(self, seconds):
+        '''
+        inhibits screen saver for seconds and creates a thread that
+        will uninhibit after seconds
+        '''
+        bus = dbus.SessionBus()
+        saver = bus.get_object('org.freedesktop.ScreenSaver', '/ScreenSaver')
+        saver_interface = dbus.Interface(saver,
+            dbus_interface='org.freedesktop.ScreenSaver')
+        # now we can inhibit the screensaver
+        try:
+            cookie = saver_interface.Inhibit("break reminder", "ux reasons")
+            # adds 2 minutes to prevent instant sleeping after break ends
+            time.sleep(seconds + 120)
+            success = True
+
+        except Exception as error:
+            success = False
+
+        finally:
+            if success:
+                saver_interface.UnInhibit(cookie)
