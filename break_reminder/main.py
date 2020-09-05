@@ -4,8 +4,6 @@ from logic import Logic
 from logic.utils import ScreenSaveInhibit
 import sys
 
-import platform
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setApplicationName("Break Reminder")
