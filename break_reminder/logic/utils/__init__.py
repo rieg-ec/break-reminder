@@ -1,5 +1,4 @@
 import json
-import dbus
 import shlex, subprocess
 import platform
 import time
@@ -47,7 +46,7 @@ class ScreenSaveInhibit:
 
     def prevent_screensaver_macos(self, seconds):
         # TODO: does screen saver activates instantly after caffeinate ends?
-        command_line = f'caffeinate -t {seconds}'
+        command_line = f'caffeinate -i -t {seconds}'
         subprocess.Popen(shlex.split(command_line))
 
     def prevent_screensaver_windows(self, seconds):
@@ -57,9 +56,11 @@ class ScreenSaveInhibit:
 
     def prevent_screensaver_linux(self, seconds):
         '''
-        inhibits screen saver for seconds and creates a thread that
-        will uninhibit after seconds
+        inhibits screen saver for {seconds} and sleeps {seconds}
+        before uninhibit
         '''
+        import dbus
+
         bus = dbus.SessionBus()
         saver = bus.get_object('org.freedesktop.ScreenSaver', '/ScreenSaver')
         saver_interface = dbus.Interface(saver,
