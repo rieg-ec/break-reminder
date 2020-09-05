@@ -2,6 +2,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, QTimer
 from pynput import keyboard
 from os import path
 import json
+import threading
 
 from logic.utils import json_hook
 
@@ -63,6 +64,8 @@ class Logic(QObject):
     # signal to update all ui clocks in real time:
     update_timer_signal = pyqtSignal(int)
 
+    lock = threading.Lock()
+
     def __init__(self):
         super().__init__()
         self.counter = self.CountDown()
@@ -107,14 +110,22 @@ class Logic(QObject):
                 self.counter.start_as_break_counter()
 
     def update_config(self, config):
-        with open(path.join(path.dirname(__file__),
-                'config.json'), 'r+') as file:
+        self.update_config_thread = threading.Thread(
+            target=self.update_config_from_thread,
+            args=[config])
 
-            parameters = json.loads(file.read(), object_hook=json_hook)
-            file.seek(0)
-            for key, value in config.items():
-                parameters[key] = value
-            file.write(json.dumps(parameters))
-            file.truncate()
-        # update counter attributes from new config file:
-        self.counter.update_attrs_from_config()
+        self.update_config_thread.start()
+
+    def update_config_from_thread(self, config):
+        with self.lock:
+            with open(path.join(path.dirname(__file__),
+                    'config.json'), 'r+') as file:
+
+                parameters = json.loads(file.read(), object_hook=json_hook)
+                file.seek(0)
+                for key, value in config.items():
+                    parameters[key] = value
+                file.write(json.dumps(parameters))
+                file.truncate()
+            # update counter attributes from new config file:
+            self.counter.update_attrs_from_config()
