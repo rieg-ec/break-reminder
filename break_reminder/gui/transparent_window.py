@@ -2,11 +2,13 @@ from PyQt5.QtWidgets import (
     QWidget, QPushButton, QLabel,
     QApplication, QVBoxLayout
     )
-from PyQt5.QtCore import Qt
-
+from PyQt5.QtCore import Qt, pyqtSignal
+import platform
 import time
 
 class TransparentWindow(QWidget):
+
+    prevent_window_sleep_signal = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -42,12 +44,17 @@ class TransparentWindow(QWidget):
         WindowTransparentForInput makes QWidget frameless,
         FramelessWindowHint makes transparent for input
         '''
-        self.setWindowFlags(
-            self.windowFlags() |
-            Qt.WindowStaysOnTopHint |
-            Qt.WindowTransparentForInput |
-            Qt.FramelessWindowHint
-        )
+        # TODO: add specific os flags, Qt.Tool doesnt work on mac but is
+        #       needed in linux
+
+        flags = self.WindowFlags()
+        flags |= Qt.WindowStaysOnTopHint
+        flags |= Qt.WindowTransparentForInput
+        flags |= Qt.FramelessWindowHint
+        if platform.system() == 'Linux':
+            flags |= Qt.Tool
+
+        self.setWindowFlags(flags)
 
         # adjust transparency (opacity):
         self.setWindowOpacity(0.5)
@@ -60,6 +67,7 @@ class TransparentWindow(QWidget):
 
     def show(self, time):
         self.update_UI_timer(time)
+        self.prevent_window_sleep_signal.emit(time)
         super().show()
 
     def update_UI_timer(self, seconds_left):
