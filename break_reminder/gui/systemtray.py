@@ -56,13 +56,19 @@ class SystemTrayIcon(QSystemTrayIcon):
 
         if seconds_left:
             if seconds_left == 5 * 60:
-                self.showMessage('Break Reminder',
-                    '5 minutes before next break')
+                self.showMessage(
+                    'Break Reminder',
+                    '5 minutes before next break',
+                    self.icon,
+                    1.5 * 1000
+                    )
 
             elif seconds_left % self.break_interval_notification == 0:
                 self.showMessage('Break Reminder',
                     f'Time left until next break: {time_clock_mode}',
-                    self.icon, 1.5 * 1000)
+                    self.icon,
+                    1.5 * 1000
+                    )
 
     def pause_timer(self):
         self.pause_timer_signal.emit()
