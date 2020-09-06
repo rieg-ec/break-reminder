@@ -26,13 +26,14 @@ if __name__ == '__main__':
     logic.hide_break_ui_signal.connect(break_window.hide)
     logic.update_timer_signal.connect(break_window.update_UI_timer)
     logic.update_timer_signal.connect(system_tray_icon.update_timer_countdown)
+    logic.message_signal.connect(system_tray_icon.showMessage)
 
     system_tray_icon.open_settings_window_signal.connect(config_window.show)
-    system_tray_icon.pause_timer_signal.connect(logic.pause_timer)
-    system_tray_icon.reset_timer_signal.connect(logic.reset_timer)
+    system_tray_icon.pause_timer_signal.connect(logic.pause)
+    system_tray_icon.reset_timer_signal.connect(logic.reset)
 
     config_window.config_data_signal.connect(logic.update_config)
 
-    logic.start_active_timer()
+    logic.start_active()
 
     sys.exit(app.exec_())
