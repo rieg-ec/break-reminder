@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 
+
 class SettingsQWidget(QWidget):
 
     config_data_signal = pyqtSignal(dict)

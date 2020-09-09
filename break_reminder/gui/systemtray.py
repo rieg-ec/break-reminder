@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import QMenu, QSystemTrayIcon, QLabel, QApplication
-from PyQt5.QtCore import Qt, pyqtSignal
-
+from PyQt5.QtWidgets import QMenu, QSystemTrayIcon, QApplication
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
-
-import sys
 import time
 from os import path
+
 
 class SystemTrayIcon(QSystemTrayIcon):
 

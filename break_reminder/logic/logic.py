@@ -3,9 +3,9 @@ from pynput import keyboard
 from os import path
 import json
 import threading
-from os import path
 
 from logic.utils import json_hook
+
 
 class Logic(QObject):
 
@@ -56,7 +56,6 @@ class Logic(QObject):
         self.hide_break_ui_signal.emit()
         self.start_active()
 
-
     def update_time(self):
         if not self.time_left:
             if self.is_break:
@@ -65,13 +64,12 @@ class Logic(QObject):
                 self.start_break()
 
         else:
-            self.time_left -= self.tick # 1 or 0 if pause
+            self.time_left -= self.tick  # 1 or 0 if pause
             self.update_timer_signal.emit(self.time_left)
 
             if self.send_message and self.time_left:
                 if self.time_left == 5 * 60 or\
                 self.time_left % self.notification_interval == 0:
-
                     self.message_signal.emit(self.time_left)
 
     def on_press(self, key):
@@ -126,4 +124,5 @@ class Logic(QObject):
                     if not isinstance(value, list):
                         setattr(self, key, value)
                 self.send_message = parameters['notification_interval'][0]
-                self.notification_interval = parameters['notification_interval'][1]
+                self.notification_interval = parameters[
+                    'notification_interval'][1]

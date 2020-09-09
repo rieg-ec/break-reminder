@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import (
-    QWidget, QPushButton, QLabel,
+    QWidget, QLabel,
     QApplication, QVBoxLayout
     )
 from PyQt5.QtCore import Qt, pyqtSignal
 import platform
 import time
+
 
 class TransparentWindow(QWidget):
 

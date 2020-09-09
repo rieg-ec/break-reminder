@@ -1,8 +1,10 @@
 import json
-import shlex, subprocess
+import shlex
+import subprocess
 import platform
 import time
 import threading
+
 
 def json_hook(dict_):
     """
@@ -29,7 +31,7 @@ class ScreenSaveInhibit:
         self.system = platform.system()
 
     def inhibit_screen_saver(self, seconds):
-        seconds += 120 # prevent instant sleeping after breaks
+        seconds += 120  # prevent instant sleeping after breaks
         if self.system == 'Linux':
             th = threading.Thread(
                 target=self.prevent_screensaver_linux,
@@ -62,8 +64,8 @@ class ScreenSaveInhibit:
 
         bus = dbus.SessionBus()
         saver = bus.get_object('org.freedesktop.ScreenSaver', '/ScreenSaver')
-        saver_interface = dbus.Interface(saver,
-            dbus_interface='org.freedesktop.ScreenSaver')
+        saver_interface = dbus.Interface(
+            saver, dbus_interface='org.freedesktop.ScreenSaver')
         # now we can inhibit the screensaver
         try:
             cookie = saver_interface.Inhibit("break reminder", "ux reasons")
@@ -71,7 +73,7 @@ class ScreenSaveInhibit:
             time.sleep(seconds)
             success = True
 
-        except Exception as error:
+        except Exception:
             success = False
 
         finally:
