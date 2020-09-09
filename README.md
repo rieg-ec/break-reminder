@@ -13,4 +13,4 @@ This method should work in KDE and Gnome desktops (older versions may not be sup
 
 # MacOS
 
-the app uses MacOS caffeinate command to prevent window from sleeping when break ui is active. Caffeinate is should already be installed in MacOS devices (tested in Catalina).
+The app uses MacOS caffeinate command to prevent window from sleeping when break ui is active. Caffeinate should already be installed in MacOS devices (tested in Catalina).
