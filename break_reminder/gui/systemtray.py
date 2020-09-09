@@ -18,7 +18,7 @@ class SystemTrayIcon(QSystemTrayIcon):
 
         pixmap = QPixmap(path.join(
             path.dirname(__file__), 'assets', 'clock.png'))
-        
+
         self.icon = QIcon(pixmap)
         self.setIcon(self.icon)
 
@@ -52,7 +52,7 @@ class SystemTrayIcon(QSystemTrayIcon):
     def showMessage(self, seconds_left):
         super().showMessage(
             'Break Reminder',
-            f'{seconds_left//60} MINUTES BEFORE NEXT BREAK',
+            f'BREAK IN {seconds_left//60} MINUTES',
             self.icon, 1.5*1000
             )
 
