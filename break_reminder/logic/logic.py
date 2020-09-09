@@ -50,10 +50,7 @@ class Logic(QObject):
         self.display_break_ui_signal.emit(self.time_left)
 
     def pause(self):
-        if self.tick:
-            self.tick = 0
-        else:
-            self.tick = 1
+        self.tick = 0 if self.tick else 1
 
     def reset(self):
         self.hide_break_ui_signal.emit()
