@@ -86,12 +86,12 @@ class Logic(QObject):
 
     def update_config(self, config):
         update_config_thread = threading.Thread(
-            target=self._update_config_from_thread,
+            target=self.__update_config_from_thread,
             args=[config])
 
         update_config_thread.start()
 
-    def _update_config_from_thread(self, config):
+    def __update_config_from_thread(self, config):
         with self.lock:
             file_path = path.join(path.dirname(__file__), 'config.json')
             with open(file_path, 'r+') as file:
@@ -111,12 +111,12 @@ class Logic(QObject):
     def update_attrs(self):
         file_path = path.join(path.dirname(__file__), 'config.json')
         th = threading.Thread(
-            target=self._update_attrs_from_thread,
+            target=self.__update_attrs_from_thread,
             args=[file_path]
         )
         th.start()
 
-    def _update_attrs_from_thread(self, file_path):
+    def __update_attrs_from_thread(self, file_path):
         with self.lock:
             with open(file_path, 'r') as file:
                 parameters = json.loads(file.read(), object_hook=json_hook)
