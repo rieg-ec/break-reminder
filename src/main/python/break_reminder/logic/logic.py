@@ -4,7 +4,7 @@ from os import path
 import json
 import threading
 
-from logic.utils import json_hook
+from .utils import json_hook
 
 
 class Logic(QObject):
@@ -20,8 +20,9 @@ class Logic(QObject):
 
     lock = threading.Lock()
 
-    def __init__(self):
+    def __init__(self, config_file_path):
         super().__init__()
+        self.config_file_path = config_file_path
 
         self.update_attrs()
         self.tick = 1
@@ -93,8 +94,7 @@ class Logic(QObject):
 
     def __update_config_from_thread(self, config):
         with self.lock:
-            file_path = path.join(path.dirname(__file__), 'config.json')
-            with open(file_path, 'r+') as file:
+            with open(self.config_file_path, 'r+') as file:
                 parameters = json.loads(file.read(), object_hook=json_hook)
                 file.seek(0)
                 for key, value in config.items():
@@ -109,10 +109,9 @@ class Logic(QObject):
         self.notification_interval = parameters['notification_interval'][1]
 
     def update_attrs(self):
-        file_path = path.join(path.dirname(__file__), 'config.json')
         th = threading.Thread(
             target=self.__update_attrs_from_thread,
-            args=[file_path]
+            args=[self.config_file_path]
         )
         th.start()
 

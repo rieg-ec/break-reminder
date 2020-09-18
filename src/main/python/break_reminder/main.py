@@ -1,7 +1,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QApplication
 from gui import TransparentWindow, SystemTrayIcon, SettingsQWidget
-from logic import Logic
+from logic.logic import Logic
 from logic.utils import ScreenSaveInhibit
 import sys
 
@@ -12,10 +12,11 @@ if __name__ == '__main__':
 
     break_window = TransparentWindow()
 
-    system_tray_icon = SystemTrayIcon(break_window)
+    system_tray_icon = SystemTrayIcon(
+        appctxt.get_resource('assets'), break_window)
     config_window = SettingsQWidget()
 
-    logic = Logic()
+    logic = Logic(appctxt.get_resource('config.json'))
 
     screen_inhibitor = ScreenSaveInhibit()
     # emitted in show() method to prevent computer from going screen save

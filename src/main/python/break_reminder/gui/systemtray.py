@@ -11,11 +11,10 @@ class SystemTrayIcon(QSystemTrayIcon):
     pause_timer_signal = pyqtSignal()
     reset_timer_signal = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, assets_path, parent=None):
         super().__init__(parent)
 
-        pixmap = QPixmap(path.join(
-            path.dirname(__file__), 'assets', 'clock.png'))
+        pixmap = QPixmap(path.join(assets_path, 'clock.png'))
 
         self.icon = QIcon(pixmap)
         self.setIcon(self.icon)
