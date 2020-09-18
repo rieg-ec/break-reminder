@@ -1,3 +1,4 @@
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QApplication
 from gui import TransparentWindow, SystemTrayIcon, SettingsQWidget
 from logic import Logic
@@ -5,7 +6,7 @@ from logic.utils import ScreenSaveInhibit
 import sys
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    appctxt = ApplicationContext()
     app.setApplicationName("Break Reminder")
     app.setQuitOnLastWindowClosed(False)
 
@@ -36,4 +37,5 @@ if __name__ == '__main__':
 
     logic.start_active()
 
-    sys.exit(app.exec_())
+    exit_code = appctxt.app.exec_()
+    sys.exit(exit_code)

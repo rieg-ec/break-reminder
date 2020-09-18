@@ -1,0 +1,6 @@
+{
+    "app_name": "Break Reminder",
+    "author": "rieg-ec",
+    "main_module": "src/main/python/break_reminder/main.py",
+    "version": "0.0.0"
+}
