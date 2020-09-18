@@ -4,3 +4,4 @@ t.py
 .venv
 config.json
 test.py
+target/
