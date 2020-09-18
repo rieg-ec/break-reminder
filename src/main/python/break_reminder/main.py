@@ -7,8 +7,8 @@ import sys
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()
-    app.setApplicationName("Break Reminder")
-    app.setQuitOnLastWindowClosed(False)
+    appctxt.app.setApplicationName("Break Reminder")
+    appctxt.app.setQuitOnLastWindowClosed(False)
 
     break_window = TransparentWindow()
 
