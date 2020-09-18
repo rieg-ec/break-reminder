@@ -2,5 +2,6 @@
     "app_name": "Break Reminder",
     "author": "rieg-ec",
     "main_module": "src/main/python/break_reminder/main.py",
-    "version": "0.0.0"
+    "version": "0.0.0",
+    "hidden_imports": ["pynput.mouse._xorg", "pynput.keyboard._xorg"]
 }
