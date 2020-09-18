@@ -1,8 +1,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QApplication
 from gui import TransparentWindow, SystemTrayIcon, SettingsQWidget
-from logic.logic import Logic
-from logic.utils import ScreenSaveInhibit
+from logic import Logic, ScreenSaveInhibit
 import sys
 
 if __name__ == '__main__':
