@@ -1,6 +1,7 @@
 {
     "categories": "Utility;",
-    "description": "",
+    "description": "App to manage breaks from screen time",
     "author_email": "",
-    "url": ""
+    "url": "",
+    "hidden_imports": ["pynput.mouse._xorg", "pynput.keyboard._xorg"]
 }
