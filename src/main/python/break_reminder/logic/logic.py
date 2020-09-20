@@ -54,8 +54,10 @@ class Logic(QObject):
         self.tick = 0 if self.tick else 1
 
     def reset(self):
-        self.hide_break_ui_signal.emit()
-        self.start_active()
+        if self.is_break:
+            self.time_left = self.break_time
+        else:
+            self.time_left = self.active_time
 
     def update_time(self):
         if not self.time_left:
@@ -109,15 +111,13 @@ class Logic(QObject):
         self.notification_interval = parameters['notification_interval'][1]
 
     def update_attrs(self):
-        th = threading.Thread(
-            target=self.__update_attrs_from_thread,
-            args=[self.config_file_path]
-        )
-        th.start()
+        update_attrs_thread = threading.Thread(
+            target=self.__update_attrs_from_thread)
+        update_attrs_thread.start()
 
-    def __update_attrs_from_thread(self, file_path):
+    def __update_attrs_from_thread(self):
         with self.lock:
-            with open(file_path, 'r') as file:
+            with open(self.config_file_path, 'r') as file:
                 parameters = json.loads(file.read(), object_hook=json_hook)
                 for key, value in parameters.items():
                     if not isinstance(value, list):
