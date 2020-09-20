@@ -1,5 +1,4 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QApplication
 from gui import TransparentWindow, SystemTrayIcon, SettingsQWidget
 from logic import Logic, ScreenSaveInhibit
 import sys
@@ -13,6 +12,7 @@ if __name__ == '__main__':
 
     system_tray_icon = SystemTrayIcon(
         appctxt.get_resource('assets'), break_window)
+
     config_window = SettingsQWidget()
 
     logic = Logic(appctxt.get_resource('config.json'))

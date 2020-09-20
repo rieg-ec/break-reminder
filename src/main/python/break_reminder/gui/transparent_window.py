@@ -26,7 +26,7 @@ class TransparentWindow(QWidget):
 
         ### INSTRUCTIONS LABELS ###
         instructions_label = QLabel('Press "Esc" to skip break or '
-                                    +'"F1" to add 5 minutes', self)
+                                  + '"F1" to add 5 minutes', self)
         instructions_label.setStyleSheet('font-size: 30px;')
 
         ###########################

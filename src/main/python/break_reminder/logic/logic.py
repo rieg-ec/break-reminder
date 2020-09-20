@@ -1,6 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QObject, QTimer
 from pynput import keyboard
-from os import path
 import json
 import threading
 

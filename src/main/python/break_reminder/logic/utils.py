@@ -1,4 +1,3 @@
-import json
 import shlex
 import subprocess
 import platform
@@ -51,6 +50,7 @@ class ScreenSaveInhibit:
         subprocess.Popen(shlex.split(command_line))
 
     def prevent_screensaver_windows(self, seconds):
+        # TODO: add windows support
         # windows way of preventing idle sleep:
         # ctypes.windll.kernel32.SetThreadExecutionState('0x80000002')
         pass
